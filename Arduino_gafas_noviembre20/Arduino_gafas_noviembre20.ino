@@ -22,7 +22,7 @@ const int VIB_DER = 10;
 
 // ---------- DISTANCIA ----------
 // Si hay un objeto a menos de estos centímetros, vibra el motor
-const int UMBRAL_CM = 10;
+const int UMBRAL_CM = 150;
 
 // ---------- FUNCIÓN PARA MEDIR ----------
 // Mide la distancia en cm. Devuelve 999 si no hay eco.
@@ -67,27 +67,27 @@ void setup() {
 // ---------- PROGRAMA PRINCIPAL (se repite siempre) ----------
 void loop() {
   // Medimos cada sensor, uno detrás de otro, con una pausa entre ellos
-  long dIzq = medirCm(TRIG_IZQ, ECHO_IZQ);
-  delay(30);
-  long dFre = medirCm(TRIG_FRE, ECHO_FRE);
-  delay(30);
-  long dDer = medirCm(TRIG_DER, ECHO_DER);
-  delay(30);
+    long distanciaIzquierdaCm = medirCm(TRIG_IZQ, ECHO_IZQ);
+    delay(30);
+    long distanciaFrontalCm = medirCm(TRIG_FRE, ECHO_FRE);
+    delay(30);
+    long distanciaDerechaCm = medirCm(TRIG_DER, ECHO_DER);
+    delay(30);
 
-  // Guardamos si cada sensor detecta algo a menos de 60 cm
-  bool izq = dIzq < UMBRAL_CM;
-  bool fre = dFre < UMBRAL_CM;
-  bool der = dDer < UMBRAL_CM;
+  // Guardamos si cada sensor detecta algo a menos de 150 cm
+  bool hayObjetoIzquierda = distanciaIzquierdaCm < UMBRAL_CM;
+  bool hayObjetoFrente    = distanciaFrontalCm < UMBRAL_CM;
+  bool hayObjetoDerecha   = distanciaDerechaCm < UMBRAL_CM;
 
   // Vibra el izquierdo si lo detecta el sensor izquierdo o el frontal
-  digitalWrite(VIB_IZQ, (izq || fre) ? HIGH : LOW);
+digitalWrite(VIB_IZQ, (hayObjetoIzquierda || hayObjetoFrente) ? HIGH : LOW);
 
   // Vibra el derecho si lo detecta el sensor derecho o el frontal
-  digitalWrite(VIB_DER, (der || fre) ? HIGH : LOW);
+  digitalWrite(VIB_DER, (hayObjetoDerecha || hayObjetoFrente) ? HIGH : LOW);
 
   // Mostramos las tres distancias en el Monitor Serie (para pruebas)
-  Serial.print("Izq: "); Serial.print(dIzq);
-  Serial.print(" cm | Frente: "); Serial.print(dFre);
-  Serial.print(" cm | Der: "); Serial.print(dDer);
-  Serial.println(" cm");
+Serial.print("Izq: "); Serial.print(distanciaIzquierdaCm);
+Serial.print(" cm | Frente: "); Serial.print(distanciaFrontalCm);
+Serial.print(" cm | Der: "); Serial.print(distanciaDerechaCm);
+Serial.println(" cm");
 }
